@@ -17,27 +17,19 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(ZoneRepository $zoneRepo): Response
     {
-        $myMap= (new Map())
-            ->center(new Point(49.118480, -1.066835))
-            ->zoom(20)
-            // Or automatically fit the bounds to the markers
-        ;
         $zones=$zoneRepo->findAll();
+        $coordonees=[];
+        $types=[];
+        $names=[];
         for ($i=0; $i < count($zones); $i++) { 
-            $points=[];
-            $lats=$zones[$i]->getLatitude();
-            $longs=$zones[$i]->getLongitude();
-            for ($j=0; $j < count($lats); $j++) { 
-                $points[]=new Point($lats[$j], $longs[$j]);
-            }
-            $myMap
-                ->addPolygon(new Polygon(
-                    points:$points,
-                    title:  $zones[$i]->getNom(),
-                ));
+            $coordonees[$i]=[$zones[$i]->getLatitude(),$zones[$i]->getLongitude()];
+            $types[$i]=$zones[$i]->getType()->getNom();
+            $names[$i]=$zones[$i]->getNom();
         }
         return $this->render('home/index.html.twig', [
-            'my_map'=> $myMap,
+            'coordonees'=> $coordonees,
+            'types'=>$types,
+            "names"=>$names
         ]);
     }
 }
