@@ -25,36 +25,50 @@
         var polygonCoordinates = {{ coordonees|json_encode|raw }};
         var colors={{types|json_encode|raw}};
         var names={{names|json_encode|raw}};
+        var emplacements={{emplacementProduits|json_encode|raw}};
+        var zones=[];
+        console.log(emplacements);
         for(var i=0;i<polygonCoordinates.length;i++){
             var options=[];
             for(var j=0;j<polygonCoordinates[i][0].length;j++){
                 options.push([polygonCoordinates[i][0][j],polygonCoordinates[i][1][j]]);
             }
             var color="black";
+            var popUpText=`<h2>${names[i]}</h2>`;
             if(colors[i]=="terrain"){
                 color="blue";
             }
             else if(colors[i]=="batiment"){
+                popUpText+=`<table>`;
                 color="red";
             }
-            var polygon = L.polygon(options, {
-                color: color,        // Couleur du contour du polygone
-                fillColor: color,  // Couleur de remplissage du polygone
+            var polygon=L.polygon(options,{
+                color:color,
+                fillColor: color 
             }).addTo(map);
+            polygon.bindPopup(popUpText);
+            zones[names[i]]=polygon;
 
             var center = polygon.getBounds().getCenter();
 
-            polygon.bindTooltip(colors[i] +" "+ names[i], { 
+            polygon.bindTooltip(names[i], { 
                 permanent: true,   // Permet d'afficher le tooltip en permanence
                 direction: 'center', // Centrer le tooltip par rapport à la position
                 className: 'custom-tooltip'  // Vous pouvez personnaliser le style du tooltip
             }).openTooltip(center);
-        }
-        // Création du polygone avec des options de couleur
-        
+        };
+        console.log(zones);
+        for(var i=0;i<emplacements.length;i++){
+            if(emplacements[i].endroit == emplacements[i].emplacement){
+                zones[emplacements[i].endroit]._popup._content+=`<tr><td>${emplacements[i].equipement}</td><td>En place</td></tr>`;
+            }
+            else{
+                zones[emplacements[i].endroit]._popup._content+=`<p>${emplacements[i].equipement}</p>`;
+                zones[emplacements[i].emplacement]._popup._content+=`<tr><td>${emplacements[i].equipement}</td><td>${emplacements[i].endroit}</td></tr>`;
+            }
+            
 
-        // Optionnel: Ajout d'un popup au clic sur le polygone
-        polygon.bindPopup("Voici mon polygone coloré!");
+        }
     </script>
     
     

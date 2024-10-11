@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\EmplacementsRepository;
+use App\Repository\EquipementRepository;
 use App\Repository\ZoneRepository;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Point;
@@ -15,8 +17,21 @@ use Symfony\UX\Map\Polygon;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ZoneRepository $zoneRepo): Response
+    public function index(ZoneRepository $zoneRepo, EquipementRepository $equipementRepo, EmplacementsRepository $emplacementRepo): Response
     {
+        //Récupération emplacements
+        $equipements=$equipementRepo->findAll();
+        $emplacementProduits=[];
+        for($i=0;$i<count($equipements);$i++){
+            $historique=$equipements[$i]->getHistoriques();
+            $emplacementProduits[]=[
+                "equipement"=>$equipements[$i]->getNom(),
+                "endroit"=>$historique[count($historique)-1]->getZone()->getNom(),
+                "emplacement"=>$emplacementRepo->findOneBy(["equipement"=>$equipements[$i]])->getZone()->getNom()
+            ];
+        }
+
+        //Récupération des zones
         $zones=$zoneRepo->findAll();
         $coordonees=[];
         $types=[];
@@ -29,7 +44,8 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'coordonees'=> $coordonees,
             'types'=>$types,
-            "names"=>$names
+            "names"=>$names,
+            "emplacementProduits"=>$emplacementProduits
         ]);
     }
 }
