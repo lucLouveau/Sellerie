@@ -52,12 +52,19 @@ class Zone
     #[ORM\OneToMany(targetEntity: Historiques::class, mappedBy: 'zone')]
     private Collection $historiques;
 
+    /**
+     * @var Collection<int, Rayons>
+     */
+    #[ORM\OneToMany(targetEntity: Rayons::class, mappedBy: 'zone')]
+    private Collection $rayons;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->equipements = new ArrayCollection();
         $this->emplacements = new ArrayCollection();
         $this->historiques = new ArrayCollection();
+        $this->rayons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,6 +234,36 @@ class Zone
             // set the owning side to null (unless already changed)
             if ($historique->getZone() === $this) {
                 $historique->setZone(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rayons>
+     */
+    public function getRayons(): Collection
+    {
+        return $this->rayons;
+    }
+
+    public function addRayon(Rayons $rayon): static
+    {
+        if (!$this->rayons->contains($rayon)) {
+            $this->rayons->add($rayon);
+            $rayon->setZone($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRayon(Rayons $rayon): static
+    {
+        if ($this->rayons->removeElement($rayon)) {
+            // set the owning side to null (unless already changed)
+            if ($rayon->getZone() === $this) {
+                $rayon->setZone(null);
             }
         }
 

@@ -16,9 +16,6 @@ class Emplacements
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $rayon = null;
-
     #[ORM\Column]
     private ?int $etage = null;
 
@@ -29,7 +26,7 @@ class Emplacements
     private ?Equipement $equipement = null;
 
     #[ORM\ManyToOne(inversedBy: 'emplacements')]
-    private ?Zone $zone = null;
+    private ?Rayons $rayon = null;
 
     public function getId(): ?int
     {
@@ -44,18 +41,6 @@ class Emplacements
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getRayon(): ?string
-    {
-        return $this->rayon;
-    }
-
-    public function setRayon(string $rayon): static
-    {
-        $this->rayon = $rayon;
 
         return $this;
     }
@@ -96,14 +81,14 @@ class Emplacements
         return $this;
     }
 
-    public function getZone(): ?Zone
+    public function getRayon(): ?Rayons
     {
-        return $this->zone;
+        return $this->rayon;
     }
 
-    public function setZone(?Zone $zone): static
+    public function setRayon(?Rayons $rayon): static
     {
-        $this->zone = $zone;
+        $this->rayon = $rayon;
 
         return $this;
     }
