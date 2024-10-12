@@ -17,5 +17,9 @@
             }
         }
     },
-    "entrypoints": []
+    "entrypoints": [],
+    "example": {
+        "enabled": true,
+        "resolve": "./controllers/hello_controller.js"
+    }
 }

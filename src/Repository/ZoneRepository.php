@@ -16,6 +16,14 @@ class ZoneRepository extends ServiceEntityRepository
         parent::__construct($registry, Zone::class);
     }
 
+    public function findAllNotId($id){
+        return $this->createQueryBuilder('z')
+            ->where('z.id != :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Zone[] Returns an array of Zone objects
     //     */

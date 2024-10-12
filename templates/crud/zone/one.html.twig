@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+    .zone{
+        mask: url({{asset('image/background/diagonal.svg')}});
+    }
+    </style>
+{% endblock %}
+{% block body %}
+{{ form_start(form) }}
+    {{form_row(form.nom)}}
+    {{form_row(form.type)}}
+    <input type="hidden" id="zone_latitude" name="zone[latitude]" value="{{zone.latitude|join(',')}}">
+    <input type="hidden" id="zone_longitude" name="zone[longitude]" value="{{zone.longitude|join(',')}}">
+    <input type="submit" id="zone_add" disabled value="Modifier">
+{{ form_end(form) }}
+<div id="map" style="height: 500px;"></div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+<script src="{{ asset('js/zone/add/zone-map.js') }}"></script>
+<script>
+    var latitudes={{zone.latitude|json_encode|raw}};
+    var longitudes={{zone.longitude|json_encode|raw}};
+    var zonePlace={{zonePlace|json_encode|raw}};
+    createMap(latitudes, longitudes, zonePlace);
+</script>
+{% endblock %}

@@ -7,6 +7,9 @@
 {% block stylesheets %}
      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
      <style>
+        table{
+            margin: auto
+        }
         table td>div{
             display:flex;
             justify-content:center;
@@ -20,11 +23,20 @@
             background-color:  #f0f0f0;
         }
         .la{
-            background-color: green;
+            background-color: #73ff73;
         }
         .pasLa{
-            background-color: red;
+            background-color: #ff7373;
             color:white;
+        }
+        .leaflet-popup-content{
+            height: 200px;
+            width: 350px;
+            overflow-y: scroll;
+            width: fit-content;
+        }
+        ::-webkit-scrollbar {
+            display: none;
         }
      </style>
 {% endblock %}
@@ -37,12 +49,11 @@
     <script>
         var dataZones = {{ dataZones|json_encode|raw }};
         var dataEquipements = {{ dataEquipements|json_encode|raw }};
-
+        console.log(dataZones);
         createMap(dataZones, dataEquipements);
     </script>
-    
-    
-
-    
-    
+    {% include "home/_dropDowns.html.twig"  %}
+    {% for zone in dataZones %}
+        
+    {% endfor %}
 {% endblock %}

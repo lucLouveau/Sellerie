@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TypeZone{% endblock %}
+
+{% block body %}
+    <h1>TypeZone</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ type_zone.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ type_zone.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_type_zone_index') }}">back to list</a>
+
+    <a href="{{ path('app_type_zone_edit', {'id': type_zone.id}) }}">edit</a>
+
+    {{ include('type_zone/_delete_form.html.twig') }}
+{% endblock %}
