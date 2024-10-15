@@ -2,6 +2,7 @@
 
 {% block title %}Hello HomeController!{% endblock %}
 {% block javascripts %}
+    <script src="{{ asset('js/elements/dropDown.js')  }}"></script>
     <script src="{{ asset('js/home/home-leaflet.js') }}"></script>
 {% endblock %}
 {% block stylesheets %}
@@ -45,15 +46,44 @@
     <div id="map" style="height: 500px;"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    {% for type in typesZone %}
+        {% include "home/_buttonDropDown.html.twig" with {'nom': type.nom, 'color': 'bg-gray-900'} %}
+        <div id="dropdown-{{type.nom|replace({" ": "-"})}}" class="hidden" style="padding-left:10px;">
+        {% for zone in type.getZones() %}
+        {% set index = dataZones|filter(v => v.id == zone.id) %}
+        {% include "home/_buttonDropDown.html.twig" with {'nom': zone.nom, 'color': 'bg-gray-800'} %}
+            <div id="dropdown-{{zone.nom|replace({" ": "-"})}}" class="hidden" style="padding-left:10px;">
+                {% include "home/_buttonDropDown.html.twig" with {'nom': 'présent ici', 'id': [zone.nom|replace({" ":"-"}),'present']|join('-') , 'color': 'bg-gray-900'} %}
+                <div id="dropdown-{{zone.nom|replace({" ":"-"})}}-present" class=" hidden bg-white w-full shadow dark:bg-gray-700" style="padding-left: 10px;">
+                <ul class="text-white p-2">
+                {% for dataZoneObs in index %}
+                    {% if dataZoneObs.equipementIn is empty %}
+                        <li>Il n'y a aucun équipement qui est utilisé ici</li>
+                    {% endif %}
+                    {% for equipement in dataZoneObs.equipementIn %}
+                        <li>{{equipement.nom}}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+                </div>
+                {% for rayon in zone.getRayons() %}
+                    {% include "home/_buttonDropDown.html.twig" with {'nom': rayon.nom, 'id': [zone.nom|replace({" ":"-"}),rayon.nom|replace({" ":"-"})]|join('-') , 'color': 'bg-gray-900'} %}
+                    {% include "home/_dropDowns.html.twig" with {'nom': rayon.nom, "zone": zone,"content": rayon.getEmplacements() } %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
 
     <script>
         var dataZones = {{ dataZones|json_encode|raw }};
         var dataEquipements = {{ dataEquipements|json_encode|raw }};
-        console.log(dataZones);
         createMap(dataZones, dataEquipements);
+
+        var dropDowns=document.querySelectorAll(".dropdown");
+        dropDowns.forEach(function(dropDown){
+            initDropDown(dropDown);
+        });
     </script>
-    {% include "home/_dropDowns.html.twig"  %}
-    {% for zone in dataZones %}
-        
-    {% endfor %}
+
 {% endblock %}

@@ -35,12 +35,6 @@ class Zone
     private Collection $categories;
 
     /**
-     * @var Collection<int, Equipement>
-     */
-    #[ORM\OneToMany(targetEntity: Equipement::class, mappedBy: 'zoneActu')]
-    private Collection $equipements;
-
-    /**
      * @var Collection<int, Emplacements>
      */
     #[ORM\OneToMany(targetEntity: Emplacements::class, mappedBy: 'zone')]
@@ -61,7 +55,6 @@ class Zone
     public function __construct()
     {
         $this->categories = new ArrayCollection();
-        $this->equipements = new ArrayCollection();
         $this->emplacements = new ArrayCollection();
         $this->historiques = new ArrayCollection();
         $this->rayons = new ArrayCollection();
@@ -144,36 +137,6 @@ class Zone
             // set the owning side to null (unless already changed)
             if ($category->getZone() === $this) {
                 $category->setZone(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Equipement>
-     */
-    public function getEquipements(): Collection
-    {
-        return $this->equipements;
-    }
-
-    public function addEquipement(Equipement $equipement): static
-    {
-        if (!$this->equipements->contains($equipement)) {
-            $this->equipements->add($equipement);
-            $equipement->setZoneActu($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEquipement(Equipement $equipement): static
-    {
-        if ($this->equipements->removeElement($equipement)) {
-            // set the owning side to null (unless already changed)
-            if ($equipement->getZoneActu() === $this) {
-                $equipement->setZoneActu(null);
             }
         }
 

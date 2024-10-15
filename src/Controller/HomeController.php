@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\EmplacementsRepository;
 use App\Repository\EquipementRepository;
+use App\Repository\TypeZoneRepository;
 use App\Repository\ZoneRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,14 +12,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ZoneRepository $zoneRepo, EquipementRepository $equipementRepo, EmplacementsRepository $emplacementRepo): Response
+    public function index(ZoneRepository $zoneRepo, EquipementRepository $equipementRepo, TypeZoneRepository $typeZoneRepo, EmplacementsRepository $emplacementRepo): Response
     {
         //Récupération emplacements
-        $zones=$zoneRepo->findAll();
+        $zones=$zoneRepo->findBy([],['nom'=>'ASC']);
         $dataZones=[
         ];
         foreach ($zones as $key => $zone){
             $dataZones[$key]=[
+                "equipementIn"=>$zoneRepo->findEquipementInZone($zone->getId()),
+                "id"=>$zone->getId(),
                 "nom"=>$zone->getNom(),
                 "coord"=>[],
                 "rayons"=>[],
@@ -64,9 +67,11 @@ class HomeController extends AbstractController
                 "position"=>$pos
             ];
         }
+        $typesZone= $typeZoneRepo->findAll();
         return $this->render('home/index.html.twig', [
             'dataZones'=>$dataZones,
             'dataEquipements'=>$dataEquipements,
+            'typesZone'=>$typesZone,
         ]);
     }
 }

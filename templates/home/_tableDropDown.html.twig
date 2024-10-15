@@ -1,0 +1,22 @@
+<table class="py-2 text-sm text-gray-700 dark:text-gray-200 text-center" aria-labelledby="dropdownDefaultButton">
+<tr><th class="p-2">Equipement</th><th>Localisation</th></tr>
+{% for emplacement in data %}
+    
+    
+    {% set equipement = emplacement.getEquipement() %}
+    {% if equipement is not empty %}
+    {% set historique = equipement.getHistoriques() %}
+    {% if historique is not empty %}
+        {% if historique|last.zone.nom == zone.nom %}
+        <tr style="background-color: #73ff73; color:black; border-radius:15px;"><td class="p-2">{{equipement.nom}}</td><td>à sa place
+        {% else %}
+        <tr style="background-color: #ff7373; border-radius:15px;"><td class="p-2">{{equipement.nom}}</td><td>{{historique|last.zone.nom }}
+        {% endif %}
+    {% else %}
+        <tr style="background-color: #73ff73; color:black; border-radius:15px;"><td class="p-2">{{equipement.nom}}</td><td>à sa place
+    {% endif %}
+    {% endif %}
+    </td>
+    </tr>
+{% endfor %}
+</table>

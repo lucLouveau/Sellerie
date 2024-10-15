@@ -24,6 +24,25 @@ class ZoneRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findEquipementInZone(int $zoneId): array{
+        return $this->createQueryBuilder('z')
+            ->select('e.id AS equipement_id, e.nom, z.nom AS zone_nom, h.date,m.nom AS mouvement_nom')
+            ->join('z.historiques', 'h') // Relation entre Zone et Historique
+            ->join('h.equipement', 'e')
+            ->join('h.mouvement', 'm')  // Relation entre Historique et Equipement
+            ->where('z.id = :zoneId')    // Filtrer par l'ID de la zone
+            ->andWhere('h.date = (
+                SELECT MAX(h2.date)
+                FROM App\Entity\Historiques h2
+                WHERE h2.equipement = h.equipement
+            )')
+            ->andWhere('m.nom != :retour')
+            ->setParameter('zoneId', $zoneId)
+            ->setParameter('retour', 'retour')
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Zone[] Returns an array of Zone objects
     //     */
