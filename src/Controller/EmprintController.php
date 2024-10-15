@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Equipement;
-use App\Entity\Historiques;
+use App\Entity\EquipementEmprunte;
 use App\Entity\Mouvements;
+use App\Entity\Historiques;
 use App\Form\HistoriquesType;
 use App\Repository\EquipementRepository;
 use App\Repository\MouvementsRepository;
@@ -13,14 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\DependencyInjection\Attribute\When;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class EmprintController extends AbstractController
 {
-    #[Route('/emprint', name: 'app_emprint')]
-    public function index(MouvementsRepository $mouvRepo,EquipementRepository $equipementRepo,Request $request,EntityManagerInterface $em): Response
+    #[Route('/emprunt', name: 'app_emprunt')]
+    public function index(MouvementsRepository $mouvRepo,EquipementRepository $equipementRepo,Request $request,EntityManagerInterface $em,#[CurrentUser] User $user): Response
     {
         $mouvement= $mouvRepo->findOneBy(["nom"=>"Sortie"]);
         $equipements=$equipementRepo->findAll();
@@ -41,13 +42,18 @@ class EmprintController extends AbstractController
             'choices'=>[$mouvement],
             'choice_label'=>'nom',
         ]);
+        $historique->setUser($user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $equipEmprunt=new EquipementEmprunte();
+            $equipEmprunt->setEquipement($historique->getEquipement());
+            $equipEmprunt->setUser($user);
+            $em->persist($equipEmprunt);
             $em->persist($historique);
             $em->flush();
 
-            return $this->redirectToRoute('app_emprint', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_emprunt', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('emprint/index.html.twig', [
@@ -56,6 +62,4 @@ class EmprintController extends AbstractController
             'equipements'=>$equipements,
         ]);
     }
-
-    
 }

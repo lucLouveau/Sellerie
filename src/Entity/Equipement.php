@@ -33,9 +33,16 @@ class Equipement
     #[ORM\OneToMany(targetEntity: Historiques::class, mappedBy: 'equipement')]
     private Collection $historiques;
 
+    /**
+     * @var Collection<int, EquipementEmprunte>
+     */
+    #[ORM\OneToMany(targetEntity: EquipementEmprunte::class, mappedBy: 'equipement')]
+    private Collection $equipementEmpruntes;
+
     public function __construct()
     {
         $this->historiques = new ArrayCollection();
+        $this->equipementEmpruntes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +122,36 @@ class Equipement
             // set the owning side to null (unless already changed)
             if ($historique->getEquipement() === $this) {
                 $historique->setEquipement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EquipementEmprunte>
+     */
+    public function getEquipementEmpruntes(): Collection
+    {
+        return $this->equipementEmpruntes;
+    }
+
+    public function addEquipementEmprunte(EquipementEmprunte $equipementEmprunte): static
+    {
+        if (!$this->equipementEmpruntes->contains($equipementEmprunte)) {
+            $this->equipementEmpruntes->add($equipementEmprunte);
+            $equipementEmprunte->setEquipement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipementEmprunte(EquipementEmprunte $equipementEmprunte): static
+    {
+        if ($this->equipementEmpruntes->removeElement($equipementEmprunte)) {
+            // set the owning side to null (unless already changed)
+            if ($equipementEmprunte->getEquipement() === $this) {
+                $equipementEmprunte->setEquipement(null);
             }
         }
 
