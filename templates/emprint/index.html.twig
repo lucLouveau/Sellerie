@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    {{form_start(form)}}
+        {{form_row(form.equipement)}}
+        {{form_row(form.mouvement)}}
+        <input name="historiques_mouvement" type="hidden" value="{{mouvement.id}}">
+    {{form_end(form)}}
+{% endblock %}

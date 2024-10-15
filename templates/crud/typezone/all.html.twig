@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<table>
+    <tr><th>Nom</th><th>Action</th></tr>
+{% for typezone in typeZones %}
+    <tr>
+        <td>{{typezone.nom}}</td>
+        <td>
+            <a href="{{path('app_typezone_show',{'id':typezone.id})}}">Inspecter</a>
+            <a href="{{path('app_typezone_edit',{'id':typezone.id})}}">Modifier</a>
+        </td>
+    </tr>
+    
+{% endfor %}
+</table>
+{% endblock %}

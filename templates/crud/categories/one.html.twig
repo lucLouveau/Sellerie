@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<table>
+    <tr><th>Nom</th><th>Action</th></tr>
+    <tr>
+        <td>{{categorie.nom}}</td>
+        <td>
+            <a href="{{path('app_categorie_show',{'id':categorie.id})}}">Inspecter</a>
+            <a href="{{path('app_categorie_edit',{'id':categorie.id})}}">Modifier</a>
+        </td>
+    </tr>
+</table>
+{% endblock %}
