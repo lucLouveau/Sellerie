@@ -2,19 +2,21 @@
 
 namespace App\Controller\gestionEmprunt;
 
-use App\Entity\Historiques;
+use DateTime;
+use DateTimeZone;
 use App\Entity\User;
 use App\Form\RendreType;
-use App\Repository\EmplacementsRepository;
-use App\Repository\EquipementEmprunteRepository;
+use App\Entity\Historiques;
 use App\Repository\EquipementRepository;
 use App\Repository\MouvementsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\EmplacementsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EquipementEmprunteRepository;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class RenduController extends AbstractController
 {
@@ -38,7 +40,10 @@ class RenduController extends AbstractController
             $historique = new Historiques();
             $historique->setEquipement($equip);
             $historique->setUser($user);
-            $historique->setDate(new \DateTime());
+            $date=new DateTime();
+            $timezone=new DateTimeZone('Europe/Paris');
+            $date->setTimezone($timezone); 
+            $historique->setDate($date);
             $historique->setMouvement($mouveRepo->findOneBy(['nom'=>'Retour']));
             $historique->setZone($emplacementRepo->findOneBy(['equipement'=>$equip])->getRayon()->getZone());
 

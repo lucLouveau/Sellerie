@@ -13,7 +13,16 @@
             <a href="{{path('app_equipement')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Équipements</a>
             <a href="{{path('app_categorie')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Catégories</a>
             <a href="{{path('app_typezone')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Type Zones</a>
-            <a href="{{path('app_emprunt')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Emprunter un equipement</a>
+            {% if app.user %}
+              <a href="{{path('app_emprunt')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Emprunter un equipement</a>
+              {% if app.user and app.user.equipementEmpruntes|length != 0 %}
+                <a href="{{path('app_rend')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Rendre un equipement</a>
+              {% endif %}
+              {% if "ROLE_ADMIN" in app.user.roles %}
+                <a href="{{path('app_historique')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Historique</a>
+              {% endif %}
+            {% endif %}
+            
             
           </div>
         </div>

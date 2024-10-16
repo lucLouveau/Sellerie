@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+{% endblock %}
+{% block javascripts %}
+    <script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+{% endblock %}
+{% block body %}
+    <table id="table" class="display">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Equipement</th>
+                <th>Catégorie</th>
+                <th>Mouvement</th>
+                <th>Zone</th>
+                <th>Employé</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for historique in historiques %}
+                <tr>
+                    <td><a href="{{path('app_historique_date',{'date':historique.date|date("Y-m-d")})}}">{{historique.date|date("d/m/Y H:i")}}</a></td>
+                    <td><a href="{{path('app_historique_equipement',{'id':historique.equipement.id})}}">{{historique.equipement.nom}}</a></td>
+                    <td>{{historique.equipement.categorie.nom}}</td>
+                    <td>{{historique.mouvement.nom}}</td>
+                    <td><a href="{{path('app_historique_zone',{'id':historique.zone.id})}}">{{historique.zone.nom}}</a></td>
+                    <td><a href="{{path('app_historique_employe',{'id':historique.user.id})}}">{{historique.user.prenom}} {{historique.user.nom}}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        let table = new DataTable('#table');
+    </script>
+{% endblock %}

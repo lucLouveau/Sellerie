@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use DateTime;
+use DateTimeZone;
 use App\Entity\User;
 use App\Entity\Equipement;
-use App\Entity\EquipementEmprunte;
 use App\Entity\Mouvements;
 use App\Entity\Historiques;
 use App\Form\HistoriquesType;
+use App\Entity\EquipementEmprunte;
 use App\Repository\EquipementRepository;
 use App\Repository\MouvementsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,8 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EmprintController extends AbstractController
 {
@@ -37,15 +39,15 @@ class EmprintController extends AbstractController
             'choices'=>$equipements,
             'choice_label'=>'nom',
         ]);
-        $form->add('mouvement', EntityType::class,[
-            'class'=> Mouvements::class,
-            'choices'=>[$mouvement],
-            'choice_label'=>'nom',
-        ]);
         $historique->setUser($user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $date=new DateTime();
+            $timezone=new DateTimeZone('Europe/Paris');
+            $date->setTimezone($timezone); 
+            $historique->setDate($date);
+            $historique->setMouvement($mouvement);
             $equipEmprunt=new EquipementEmprunte();
             $equipEmprunt->setEquipement($historique->getEquipement());
             $equipEmprunt->setUser($user);
@@ -53,12 +55,11 @@ class EmprintController extends AbstractController
             $em->persist($historique);
             $em->flush();
 
-            return $this->redirectToRoute('app_emprunt', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('emprint/index.html.twig', [
             'form'=>$form,
-            'mouvement'=>$mouvement,
             'equipements'=>$equipements,
         ]);
     }

@@ -17,7 +17,6 @@ class HistoriquesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date')
             ->add('zone', EntityType::class, [
                 'class' => Zone::class,
                 'choice_label' => 'nom',

@@ -16,6 +16,14 @@ class HistoriquesRepository extends ServiceEntityRepository
         parent::__construct($registry, Historiques::class);
     }
 
+    public function findAllByDate($date){
+        return $this->createQueryBuilder('h')
+            ->where('h.date BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $date.' 00:00:00')
+            ->setParameter('endDate', $date.' 23:59:59')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Historiques[] Returns an array of Historiques objects
     //     */

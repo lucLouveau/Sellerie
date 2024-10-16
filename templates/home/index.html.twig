@@ -53,9 +53,9 @@
         {% set index = dataZones|filter(v => v.id == zone.id) %}
         {% include "home/_buttonDropDown.html.twig" with {'nom': zone.nom, 'color': 'bg-gray-800'} %}
             <div id="dropdown-{{zone.nom|replace({" ": "-"})}}" class="hidden" style="padding-left:10px;">
-                {% include "home/_buttonDropDown.html.twig" with {'nom': 'présent ici', 'id': [zone.nom|replace({" ":"-"}),'present']|join('-') , 'color': 'bg-gray-900'} %}
-                <div id="dropdown-{{zone.nom|replace({" ":"-"})}}-present" class=" hidden bg-white w-full shadow dark:bg-gray-700" style="padding-left: 10px;">
+                <div class="bg-white w-full shadow dark:bg-gray-700" style="padding-left: 10px;">
                 <ul class="text-white p-2">
+                
                 {% for dataZoneObs in index %}
                     {% if dataZoneObs.equipementIn is empty %}
                         <li>Il n'y a aucun équipement qui est utilisé ici</li>
