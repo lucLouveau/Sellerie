@@ -1,0 +1,56 @@
+APP_NAME = Sellerie
+PORT ?= 8000
+
+.PHONY: help
+
+help:
+	@echo 
+@echo Usage:
+	@echo  help                       "Show all available commande from makerfile"
+	@echo  setup                      "Setup the intire project (install of dependencies, database creation and migrations)"
+	@echo  start [PORT=XXXX]          "Start the server on the specified port (default:8000)"
+	@echo  stop                       "Stop symfony server"
+	@echo  install                    "Install all the composer dependencies"
+	@echo  install_start [PORT=XXXX]  "Start by installing dependencies and launghing the server on the specified port (default:8000)"
+	@echo  db_update                  "Apply migrations to the database"
+	@echo  db_fixtures                "Load the fixtures on the database"
+	@echo  db_create                  "Create the database and apply the migrations"
+	@echo
+
+
+start: ## start server on specified port (default=8000)
+	@echo Starting $(APP_NAME) on port $(PORT)...
+	@symfony server:start --port=$(PORT)
+
+stop: ## stop symfony server
+	@echo Stopping $(APP_NAME)
+	@symfony server:stop
+
+install: ## install dependencies
+	@echo Installing dependencies...
+	@composer install
+
+install_start: ## install dependencies and start server on specified port (default=8000)
+	@echo Installing dependencies and starting the server...
+	@make install
+	@make start PORT=$(PORT)
+
+db_update:
+	@echo Updating the Database
+	@symfony console make:migration -n
+	@symfony console d:m:m -n
+
+db_create:
+	@echo Creating the Database
+	@symfony console d:d:c
+	@make db_update
+	@make db_fixtures
+
+db_fixtures:
+	@echo Loading fixtures
+	@symfony console d:f:l -n
+
+setup:
+	@echo Setup the project
+	@make install
+	@make db_create
